@@ -56,7 +56,7 @@ pragma solidity >= 0.6.0 < 0.8.0;
  **/
  
 contract Context {
-    constructor ()  {}
+    constructor () public {}
     
     function _msgSender() internal view virtual returns (address payable) {
         return msg.sender;
@@ -138,7 +138,7 @@ interface IBEP20 {
 
 pragma solidity >= 0.6.0 < 0.8.0;
 
-**
+/**
  * @dev Wrappers over SOlidity's arithmetich operations with added overflow checks.
  **/
  
@@ -197,7 +197,7 @@ contract Ownable is Context {
  
  event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
  
- constructor () {
+ constructor () public {
      address msgSender = _msgSender();
      _owner = msgSender;
      emit OwnershipTransferred(address(0), msgSender);
@@ -239,19 +239,19 @@ contract TokenPresale is Ownable {
     address payable public presale;
     uint256 public presaleStartTimestamp;
     uint256 public presaleEndTimestamp;
-    uint256 public rewardTokenCount = 0.0363636 ether; // 27.5 tokens per BNB
     uint256 public softCapEthAmount = 800 ether;
     uint256 public hardCapEthAmount = 2000 ether;
     uint256 public totalDepositedEthBalance;
     uint256 public minimumDepositEthAmount = 0.005 ether;
     uint256 public maximumDepositEthAmount = 20 ether;
+    uint256 public rewardTokenCount = 0.0363636 ether;
     
     mapping(address => uint256) public deposits;
     event Received(address, uint);
     event Deposited(address indexed user, uint256 amount);
     event Recovered(address token, uint256 amount);
     
-    constructor(LibertyToken _token){
+    constructor(LibertyToken _token) public {
         token = _token;
         presale = 0x19ece6F3D939ddC58c25cfDb11E7B44716E31B21;
         presaleStartTimestamp = now;
@@ -266,9 +266,13 @@ contract TokenPresale is Ownable {
         require(now >= presaleStartTimestamp && now <= presaleEndTimestamp, "presale is not active");
         require(totalDepositedEthBalance.add(msg.value) <= hardCapEthAmount, "deposit limits reached");
         require(deposits[msg.sender].add(msg.value) >= minimumDepositEthAmount && deposits[msg.sender].add(msg.value) <= maximumDepositEthAmount, "incorrect amount");
+        
         uint256 bnbvalue = msg.value;
-        uint256 tokenAmount = bnbvalue.mul(1e18).div(rewardTokenCount);
-        token.transfer(msg.sender, tokenAmount);              presale.transfer(address(this).balance);
+        
+        uint256 tokenAmount = bnbvalue.mul(1e8).div(rewardTokenCount, "");
+        
+        token.transfer(msg.sender, tokenAmount);             
+        presale.transfer(address(this).balance);
         totalDepositedEthBalance = totalDepositedEthBalance.add(bnbvalue);
         deposits[msg.sender] = deposits[msg.sender].add(bnbvalue);
         emit Deposited(msg.sender, bnbvalue);
