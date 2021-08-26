@@ -239,12 +239,12 @@ contract TokenPresale is Ownable {
     address payable public presale;
     uint256 public presaleStartTimestamp;
     uint256 public presaleEndTimestamp;
-    uint256 public softCapEthAmount = 800 ether;
-    uint256 public hardCapEthAmount = 2000 ether;
+    uint256 public softCapEthAmount = 5 ether;
+    uint256 public hardCapEthAmount = 500 ether;
     uint256 public totalDepositedEthBalance;
-    uint256 public minimumDepositEthAmount = 0.005 ether;
-    uint256 public maximumDepositEthAmount = 20 ether;
-    uint256 public rewardTokenCount = 0.0363636 ether;
+    uint256 public minimumDepositEthAmount = 0.01 ether;
+    uint256 public maximumDepositEthAmount = 2 ether;
+    uint256 public rewardTokenCount = 0.000119 ether;
     
     mapping(address => uint256) public deposits;
     event Received(address, uint);
@@ -253,9 +253,9 @@ contract TokenPresale is Ownable {
     
     constructor(LibertyToken _token) public {
         token = _token;
-        presale = 0x19ece6F3D939ddC58c25cfDb11E7B44716E31B21;
+        presale = 0xf7C2593292b4C6C399ebEabBa4d45e8466415E95;
         presaleStartTimestamp = now;
-        presaleEndTimestamp = now.add(5 days + 1 hours + 30 minutes);
+        presaleEndTimestamp = now.add(30 days + 1 hours + 30 minutes);
     }
     
     receive () external payable {
